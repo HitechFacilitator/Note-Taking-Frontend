@@ -1,0 +1,22 @@
+/* style module file for the note  */
+
+.noteCard{
+    background-color: cornsilk;
+    height: 200px;
+    min-width: 100px;
+    transition: box-shadow 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.noteCard:hover{
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 6px 24px 0px,  rgba(0, 0, 0, 0.3) 0px 0px 0px 1px;
+}
+
+.cardText{
+    white-space: pre-line;
+}
+
+.cardBody{
+    overflow: scroll;
+    mask-image: linear-gradient(180deg, #000 60%, transparent);
+}
