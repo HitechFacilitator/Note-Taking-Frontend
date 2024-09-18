@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from "react";
+import { Container, Row, Col, Button } from "react-bootstrap";
+import * as Api from "./Network/notes.api";
+//importing Components
 import Note from "./Components/noteComponent";
-// import styles from "./styles/notesPage.module.css";
-import { Container, Row, Col } from "react-bootstrap";
+import AddNoteBox from "./Components/addNoteComponent.jsx"
 
 function App() {
-  //  Intialising an array of notes
+  //  Intialising the notes' state an array
   const [notes, setNotes] = useState([]);
+  // Initialising the parameters for the AddNote form/box/modal
+  const [showAddNote, setShowAddNote] = useState(false)
 
   useEffect(() =>{
     //  Async function to fetch all notes 
     async function getAllNotes() {
       try {
-        const response = await fetch("http://localhost:4000/note/getAll", {method: "GET"}) // assigning the fetsched data to the response varaible
-        console.log(response);
-        const allNotes = await response.json() // parse the json body of the above response to "allNotes" const
-        setNotes(allNotes) // set allNote(the response i.e the array of notes i.e multiple notes found in the DB)
+          const response = await Api.fetchAllData()
+          setNotes(response)
         } catch (error) {
           console.error("Error in loading all Notes : ",error);
           alert(error);
@@ -23,9 +25,17 @@ function App() {
     getAllNotes() //Function call
   }, []/* function execute once, when the page is been rendered */)
 
+  // Arrow function who will serve as indicator to close the AddNote Box
+  const close = () => setShowAddNote(false)
+
   return (
     // displaying the notes in a grid container
     <Container>
+      <Button onClick={() => {
+        setShowAddNote(true)
+      }}> 
+        Add a Note 
+      </Button>
       <Row xs={1} md={2} xl={3} xxl={4} >{/* 1 row sor small size screen,2 for medium, 3 for large and 4 for extra large screen*/}
         {notes.map(note =>(
           <Col key={note._id} className="mb-4">
@@ -33,6 +43,11 @@ function App() {
           </Col>
         ))}
       </Row>
+      { showAddNote &&
+        <AddNoteBox 
+          handleClose={ close } 
+        />
+      }
     </Container>
   );
 }
