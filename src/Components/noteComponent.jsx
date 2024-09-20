@@ -11,7 +11,7 @@ const Note = ({note}) =>{
 
     let footerText
     // determining what to display in the card footer
-    if (createdAt > updatedAt) {
+    if (createdAt >= updatedAt) {
         footerText = "Created: "+formatDate(createdAt)
     }else{
         footerText = "Updated: "+formatDate(updatedAt)

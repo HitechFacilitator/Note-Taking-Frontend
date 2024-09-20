@@ -4,6 +4,9 @@ import * as Api from "./Network/notes.api";
 //importing Components
 import Note from "./Components/noteComponent";
 import AddNoteBox from "./Components/addNoteComponent.jsx"
+// importing css file(s)
+import Utilstyles from "./styles/Utils.module.css"
+
 
 function App() {
   //  Intialising the notes' state an array
@@ -27,13 +30,19 @@ function App() {
 
   // Arrow function who will serve as indicator to close the AddNote Box
   const close = () => setShowAddNote(false)
+  const saveNewNote = (newNote) =>{
+    setNotes([...notes, newNote]) //setting the notes state to an array of old notes and the knewly created one
+    setShowAddNote(false) // closing the the AddNewNote box/form
+  }
 
   return (
     // displaying the notes in a grid container
     <Container>
       <Button onClick={() => {
-        setShowAddNote(true)
-      }}> 
+          setShowAddNote(true)
+        }}
+        className={`mb-2 ${Utilstyles.blockCenter}`}
+      > 
         Add a Note 
       </Button>
       <Row xs={1} md={2} xl={3} xxl={4} >{/* 1 row sor small size screen,2 for medium, 3 for large and 4 for extra large screen*/}
@@ -45,7 +54,8 @@ function App() {
       </Row>
       { showAddNote &&
         <AddNoteBox 
-          handleClose={ close } 
+          handleClose={close} 
+          handleSave={saveNewNote}
         />
       }
     </Container>

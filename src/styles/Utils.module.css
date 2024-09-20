@@ -1,0 +1,8 @@
+/* Util css modules for styles that are often used */
+
+/* class to center content */
+.blockCenter{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}

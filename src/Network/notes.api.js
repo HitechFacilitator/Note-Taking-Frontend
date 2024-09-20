@@ -16,14 +16,17 @@ export async function fetchAllData(setNotes){
 }
 
 export async function createNote(note) {
-    const response = await fetchAllData("http://localhost:4000/note/create",
+    const response = await fetchDataError("http://localhost:4000/note/create",
         {
             method: "POST",
-            header :{
+            headers :{
                 "Content-Type": "application/json"
             },
-            body : JSON.stringify(note)
+            body : JSON.stringify({
+                title: note.title,
+                text: note.text
+            })
         }
     )
-    return response
+    return await response.json()
 }
