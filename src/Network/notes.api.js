@@ -22,11 +22,21 @@ export async function createNote(note) {
             headers :{
                 "Content-Type": "application/json"
             },
-            body : JSON.stringify({
-                title: note.title,
-                text: note.text
-            })
+            body : JSON.stringify(note)
         }
     )
     return await response.json()
+}
+
+export async function deleteNote(id){
+    const response = await fetchDataError("http://localhost:4000/note/deleteById",
+        {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body : JSON.stringify({Id : id})
+        }
+    )
+    return response
 }

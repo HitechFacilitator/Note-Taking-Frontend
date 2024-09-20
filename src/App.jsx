@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
+import { FaPlus } from "react-icons/fa";
 import * as Api from "./Network/notes.api";
 //importing Components
 import Note from "./Components/noteComponent";
@@ -32,7 +33,17 @@ function App() {
   const close = () => setShowAddNote(false)
   const saveNewNote = (newNote) =>{
     setNotes([...notes, newNote]) //setting the notes state to an array of old notes and the knewly created one
-    setShowAddNote(false) // closing the the AddNewNote box/form
+    setShowAddNote(false) // closing the the AddNewNote box
+  }
+  async function deleteNote(id){
+    try {
+      await Api.deleteNote(id)
+      setNotes(notes.filter(note => note._id != id))
+      alert("Note deleted successfully")
+    } catch (error) {
+      console.error("Error encountered when deleting the Note : ",error);
+      alert(error)
+    }
   }
 
   return (
@@ -41,14 +52,18 @@ function App() {
       <Button onClick={() => {
           setShowAddNote(true)
         }}
-        className={`mb-2 ${Utilstyles.blockCenter}`}
-      > 
+        className={`mb-2 ${Utilstyles.blockCenter} ${Utilstyles.flexCenter}`}
+      >
+        <FaPlus/>
         Add a Note 
       </Button>
       <Row xs={1} md={2} xl={3} xxl={4} >{/* 1 row sor small size screen,2 for medium, 3 for large and 4 for extra large screen*/}
         {notes.map(note =>(
           <Col key={note._id} className="mb-4">
-            <Note note={note}/>
+            <Note 
+              note={note}
+              handleDelete={deleteNote}
+            />
           </Col>
         ))}
       </Row>
