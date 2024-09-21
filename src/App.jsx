@@ -14,6 +14,7 @@ function App() {
   const [notes, setNotes] = useState([]);
   // Initialising the parameters for the AddNote form/box/modal
   const [showAddNote, setShowAddNote] = useState(false)
+  const [noteToUpdate, setNoteToUpdate] = useState(null)
 
   useEffect(() =>{
     //  Async function to fetch all notes 
@@ -35,10 +36,14 @@ function App() {
     setNotes([...notes, newNote]) //setting the notes state to an array of old notes and the knewly created one
     setShowAddNote(false) // closing the the AddNewNote box
   }
+  const updateExistingNote = (updatedNote) =>{
+    setNotes(notes.map(note => note._id === updatedNote._id ? updatedNote : note ))
+    setNoteToUpdate(null)
+  }
   async function deleteNote(id){
     try {
       await Api.deleteNote(id)
-      setNotes(notes.filter(note => note._id != id))
+      setNotes(notes.filter(note => note._id !== id))
       alert("Note deleted successfully")
     } catch (error) {
       console.error("Error encountered when deleting the Note : ",error);
@@ -63,6 +68,7 @@ function App() {
             <Note 
               note={note}
               handleDelete={deleteNote}
+              onNoteClick={setNoteToUpdate}
             />
           </Col>
         ))}
@@ -72,6 +78,14 @@ function App() {
           handleClose={close} 
           handleSave={saveNewNote}
         />
+      }
+      { noteToUpdate &&
+        <AddNoteBox 
+          noteToUpdate={noteToUpdate}
+          handleClose={() => setNoteToUpdate(null)}
+          handleSave={updateExistingNote}
+        />
+
       }
     </Container>
   );

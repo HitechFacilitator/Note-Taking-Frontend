@@ -10,11 +10,6 @@ async function fetchDataError(input, init) {
     }
 }
 
-export async function fetchAllData(setNotes){
-    const response = await fetchDataError("http://localhost:4000/note/getAll", {method: "GET"}) 
-    return response.json()
-}
-
 export async function createNote(note) {
     const response = await fetchDataError("http://localhost:4000/note/create",
         {
@@ -23,6 +18,29 @@ export async function createNote(note) {
                 "Content-Type": "application/json"
             },
             body : JSON.stringify(note)
+        }
+    )
+    return await response.json()
+}
+
+
+export async function fetchAllData(setNotes){
+    const response = await fetchDataError("http://localhost:4000/note/getAll", {method: "GET"}) 
+    return response.json()
+}
+
+export async function updateNote(id, note) {
+    const response = await fetchDataError("http://localhost:4000/note/update",
+        {
+            method: "PATCH",
+            headers :{
+                "Content-Type": "application/json"
+            },
+            body : JSON.stringify({
+                Id: id,
+                newTitle: note.title,
+                newText: note.text 
+            })
         }
     )
     return await response.json()

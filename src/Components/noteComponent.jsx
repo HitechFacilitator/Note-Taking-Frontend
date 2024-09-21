@@ -7,7 +7,7 @@ import {Card} from "react-bootstrap";
 import { formatDate } from "../Utils/formatDate";
 
 
-const Note = ({note, handleDelete}) =>{
+const Note = ({note, handleDelete, onNoteClick}) =>{
     // destructuring our note for a more readable/clean work
     const {createdAt, updatedAt, text, title} = note
 
@@ -20,7 +20,10 @@ const Note = ({note, handleDelete}) =>{
     }
 
     return(
-        <Card className={styles.noteCard}>
+        <Card 
+            className={styles.noteCard}
+            onClick={() =>{ onNoteClick(note) }}
+        >
             <Card.Body className={styles.cardBody}>
                 <Card.Title className={Utilstyles.flexCenter}> 
                     {title}
