@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Button, Spinner } from "react-bootstrap";
 import { FaPlus } from "react-icons/fa";
+import { GrPowerReset } from "react-icons/gr";
 import * as Api from "./Network/notes.api";
 //importing Components
 import Note from "./Components/noteComponent";
 import AddNoteBox from "./Components/addNoteComponent.jsx"
+import SignUpUser from "./Components/signUpComponent.jsx";
 // importing css file(s)
 import Utilstyles from "./styles/Utils.module.css"
+import LoginUser from "./Components/logInComponent.jsx";
 
 
 function App() {
@@ -14,9 +17,12 @@ function App() {
   const [notes, setNotes] = useState([]);
   // Initialising the parameters for the AddNote form/box/modal
   const [showAddNote, setShowAddNote] = useState(false)
+  const [showSignUp, setShowSignUp] = useState(false)
+  const [showLogIn, setShowLogIn] = useState(false)
   const [noteToUpdate, setNoteToUpdate] = useState(null)
   const [notesLoading, setnotesLoading] = useState(true)
   const [showNoteLoadingError, setShowNoteLoadingError] = useState(false)
+  const [reset, setReset] = useState(false)
 
   useEffect(() =>{
     //  Async function to fetch all notes 
@@ -29,12 +35,13 @@ function App() {
         } catch (error) {
           console.error("Error in loading all Notes : ",error);
           setShowNoteLoadingError(true)
+          setReset(true)
         } finally {
           setnotesLoading(false)
         }
     }
     getAllNotes() //Function call
-  }, []/* function execute once, when the page is been rendered */)
+  }, [reset]/* function execute once, when the page is been rendered */)
 
   // Arrow function who will serve as indicator to close the AddNote Box
   const close = () => setShowAddNote(false)
@@ -46,6 +53,7 @@ function App() {
     setNotes(notes.map(note => note._id === updatedNote._id ? updatedNote : note ))
     setNoteToUpdate(null)
   }
+  const handleReset = () => setReset(false)
   async function deleteNote(id){
     try {
       await Api.deleteNote(id)
@@ -84,8 +92,15 @@ function App() {
       </Button>
       
       {/* establishing the spinner, error handler and empty handler */}
-      {notesLoading && <Spinner animation="border" variant="primary" className={`${Utilstyles.blockCenter}`}/>}
-      {showNoteLoadingError && <p className={Utilstyles.center}> An Error was encountered when fetching all notes </p>}
+      {notesLoading && <><p className={Utilstyles.center}>Getting All Your Notes</p><Spinner animation="border" variant="primary" className={`${Utilstyles.blockCenter}`}/></>}
+      {showNoteLoadingError && 
+        <>
+          <p className={Utilstyles.center}> An Error was encountered when fetching all notes </p>
+          { reset &&
+            <Button style={{color: "red",backgroundColor: "aquamarine"}} className={`mb-2 ${Utilstyles.blockCenter} ${Utilstyles.flexCenter}`} onClick={handleReset}><GrPowerReset /> Retry </Button>// onClick={setReset(true)}
+          }
+        </>
+      }
       {!notesLoading && !showNoteLoadingError &&
         <>
           {
@@ -107,6 +122,19 @@ function App() {
           handleSave={updateExistingNote}
         />
 
+      }
+
+      { showSignUp &&
+        <SignUpUser
+          handleClose={() => {setShowSignUp(false)}}
+          onSuccessfulSignUp={() =>{}}
+        />
+      }
+      { showLogIn &&
+        <LoginUser
+          handleClose={() => {setShowLogIn(false)}}
+          onLoginSuccessful={() =>{}}
+        />
       }
     </Container>
   );

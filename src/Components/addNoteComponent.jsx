@@ -1,5 +1,6 @@
 import { Button, Form, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
+import TextInputField from "./form/textInputField"
 // importing the file containing our APIs(gate btw our frontend and backend)
 import { createNote, updateNote } from "../Network/notes.api";
 
@@ -39,25 +40,28 @@ const AddNoteBox = ({handleClose, handleSave, noteToUpdate}) => {// destructurin
 
             <Modal.Body>
                 <Form id="addNoteForm" onSubmit={handleSubmit(onSubmit)}>
-                    <Form.Group>
-                        <Form.Label>Title</Form.Label>
-                        <Form.Control 
-                            type="text" 
-                            placeholder="Title" 
-                            isInvalid={!!errors.title}
-                            {...register("title", {required: "Title is required"}) }
-                        />
-                        <Form.Control.Feedback type="invalid">{errors.title?.message}</Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Group>
-                        <Form.Label>Description</Form.Label>
-                        <Form.Control 
-                            as="textarea" 
-                            rows={7} 
-                            placeholder="Add content/text (Optional)" 
-                            {...register("text")}
-                        />
-                    </Form.Group>
+
+                    <TextInputField
+                        type="text"
+                        name="title"
+                        label="Title"
+                        placeholder="Title"
+                        error={errors.title}
+                        register={register}
+                        registerOptions={{required: "Title is required"}}
+                    />
+
+                    <TextInputField
+                        as="textarea"
+                        rows={7}
+                        name="text"
+                        label="Describtion"
+                        error={errors.text}
+                        placeholder="Add content/text (Optional)"
+                        register={register}
+                        registerOptions={{}}
+                    />
+                    
                 </Form>
             </Modal.Body>
 
