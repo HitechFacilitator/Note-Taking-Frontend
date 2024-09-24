@@ -1,8 +1,10 @@
-import { Button, Form, Modal } from "react-bootstrap";
+import { Alert, Button, Form, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import TextInputField from "./form/textInputField"
 // importing the file containing our APIs(gate btw our frontend and backend)
 import { createNote, updateNote } from "../Network/notes.api";
+import { BadRequestError, Forbiddenerror, UnauthorizedError } from "../errors/httpErrors";
+import { useState } from "react";
 
 
 // initialising the popup container to fill the form for a note
@@ -14,6 +16,8 @@ const AddNoteBox = ({handleClose, handleSave, noteToUpdate}) => {// destructurin
             text: noteToUpdate?.text || ""
         }
     })
+
+    const [errorText, setErrorText] = useState(null)
 
     // function to be executed when "save" btn is clicked
     async function onSubmit(input) {
@@ -27,8 +31,12 @@ const AddNoteBox = ({handleClose, handleSave, noteToUpdate}) => {// destructurin
             console.log("bos ",noteResponse);
             handleSave(noteResponse)
         } catch (error) {
+            if (error instanceof UnauthorizedError || error instanceof Forbiddenerror || error instanceof BadRequestError ) {
+                setErrorText(error.message)
+            } else {
+                alert(error.message)
+            }
             console.error("Error encountered when creating the Note : ",error);
-            alert(error)
         }
     }
     
@@ -39,6 +47,9 @@ const AddNoteBox = ({handleClose, handleSave, noteToUpdate}) => {// destructurin
             </Modal.Header>
 
             <Modal.Body>
+                { errorText &&
+                    <Alert variant="danger">{errorText}</Alert>
+                }
                 <Form id="addNoteForm" onSubmit={handleSubmit(onSubmit)}>
 
                     <TextInputField

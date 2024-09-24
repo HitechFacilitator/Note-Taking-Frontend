@@ -1,19 +1,26 @@
-import {registerUser} from "../Network/user.api"
-import { Button, Form, Modal } from "react-bootstrap";
+import { useState } from "react";
+import { Alert, Button, Form, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
+import { registerUser } from "../Network/user.api";
+import { ConflictError, Forbiddenerror, UnauthorizedError } from "../errors/httpErrors";
 import TextInputField from "./form/textInputField";
 
 const SignUpUser = ({handleClose, onSuccessfulSignUp}) =>{
 
     const {register, handleSubmit, formState: {errors, isSubmitting}} = useForm()
+    const [errorText, setErrorText] = useState(null)
     
     async function onSubmit(input) {
         try {
             const newUser = await registerUser(input)
             onSuccessfulSignUp(newUser)
         } catch (error) {
+            if (error instanceof UnauthorizedError || error instanceof Forbiddenerror || error instanceof ConflictError ) {
+                setErrorText(error.message)
+            } else {
+                alert(error.message)
+            }
             console.error("Error encountered when Registering the User : ",error);
-            alert(error)
         }
     } 
     
@@ -23,6 +30,9 @@ const SignUpUser = ({handleClose, onSuccessfulSignUp}) =>{
                 <Modal.Title> Sign Up </Modal.Title>
             </Modal.Header>
             <Modal.Body>
+                { errorText &&
+                    <Alert variant="danger">{errorText}</Alert>
+                }
                 <Form onSubmit={handleSubmit(onSubmit)} >
                     <TextInputField
                         name="name"

@@ -1,9 +1,13 @@
+import { useState } from "react";
 import { loginUser } from "../Network/user.api"
 import TextInputField from "./form/textInputField"
-import { Button, Form, Modal } from "react-bootstrap";
+import { Alert, Button, Form, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
+import { ConflictError, Forbiddenerror, UnauthorizedError } from "../errors/httpErrors";
 
 const LoginUser = ({handleClose, onLoginSuccessful}) =>{
+
+    const [errorText, setErrorText] = useState(null)
 
     const {register, handleSubmit, formState: {errors, isSubmitting}} = useForm()
 
@@ -12,8 +16,12 @@ const LoginUser = ({handleClose, onLoginSuccessful}) =>{
             const user = await loginUser(input)
             onLoginSuccessful(user)
         } catch (error) {
+            if (error instanceof UnauthorizedError || error instanceof Forbiddenerror ) {
+                setErrorText(error.message)
+            } else {
+                alert(error.message)
+            }
             console.error("Error encountered when Logging In the User : ",error);
-            alert(error)
         }
     }
 
@@ -23,6 +31,9 @@ const LoginUser = ({handleClose, onLoginSuccessful}) =>{
                 <Modal.Title> Sign In </Modal.Title>
             </Modal.Header>
             <Modal.Body>
+                { errorText &&
+                    <Alert variant="danger">{errorText}</Alert>
+                }
                 <Form onSubmit={handleSubmit(onSubmit)} >
                     <TextInputField
                         name="name"
