@@ -35,6 +35,6 @@ export async function loginUser(user) {
 }
 
 export async function logoutUser() {
-    const response = await fetchDataError("http://localhost:4000/user/logOut",{method: "DELETE"})
-    return await response.json()
+    const response = await fetchDataError("http://localhost:4000/user/logOut",{method: "POST"})
+    return response
 }

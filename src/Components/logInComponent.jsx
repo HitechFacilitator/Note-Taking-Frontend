@@ -11,7 +11,6 @@ const LoginUser = ({handleClose, onLoginSuccessful}) =>{
         try {
             const user = await loginUser(input)
             onLoginSuccessful(user)
-            alert("lofin")
         } catch (error) {
             console.error("Error encountered when Logging In the User : ",error);
             alert(error)
