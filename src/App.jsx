@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Container } from "react-bootstrap";
 //importing Components
+import { Container } from "react-bootstrap";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LoginUser from "./Components/logInComponent.jsx";
 import NavBar from "./Components/navBarComponent.jsx";
-import NotesPageView from "./Components/notesPageView.jsx";
 import SignUpUser from "./Components/signUpComponent.jsx";
 import { getLogginUser } from "./Network/user.api.js";
-import NotePageLogOutView from "./Components/notePageLogOutView.jsx";
+import NotFoundPage from "./pages/notFoundPage.jsx";
+import NotesPage from "./pages/notesPage.jsx";
+import PrivacyPage from "./pages/privacyPage.jsx";
 
 
 function App() {
@@ -28,8 +30,8 @@ function App() {
   },[])
 
   return (
+    <BrowserRouter>
     <div>
-
     <NavBar 
       loggedInUser={loggedInUser?loggedInUser:null}
       onSignUpClicked={() => setShowSignUp(true)}
@@ -37,12 +39,21 @@ function App() {
       onLogOutSuccessful={() => setLoggedInUser(null)}
     />
     
-    <Container >
-      { loggedInUser ?
-        <NotesPageView/>
-        :
-        <NotePageLogOutView />
-      }
+    <Container>
+      <Routes>
+        <Route 
+          path="/"
+          element= {<NotesPage loggedInUser={loggedInUser} />}
+        />
+        <Route 
+          path="/privacy"
+          element= {<PrivacyPage />}
+        />
+        <Route 
+          path="/*"
+          element= {<NotFoundPage />}
+        />
+      </Routes>
     </Container>
 
     { showSignUp &&
@@ -63,9 +74,8 @@ function App() {
         }}
       />
     }
-    
     </div>
-
+    </BrowserRouter>
   );
 }
 
